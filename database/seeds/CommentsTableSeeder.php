@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Post;
-use App\Comment;
 use Faker\Generator as Faker;
+use App\Comment;
+use App\Post;
 
 class CommentsTableSeeder extends Seeder
 {
@@ -14,28 +14,23 @@ class CommentsTableSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-                // get all post published
-                $posts = Post::where('published', 1)->get();
-                
-                foreach ($posts as $post) {
+        // 1. seleziono solo i posts pubblicati
+        $posts = Post::where('published', 1)->get();
+        // 2. ciclo sui posts
+        foreach ($posts as $post) {
+            // 3. ciclo n volte per creare i commenti
+            for ($i = 0; $i < rand(0, 3); $i++) {
 
-                    for ($i = 0; $i < rand(0, 5); $i++) {
-        
-                        $newComment = new Comment();
-
-                        $newComment->post_id = $post->id; //set post_id with id of post
-
-                        if (rand(0,1)) {
-                            $newComment->name = $faker->name();//To generate author name 
-                        }
-                        else{
-                            $newComment->name = "unregistered user"; // set unregistered user
-                        }
-
-                        $newComment->content = $faker->text(); //to generate content of comment
-                        $newComment->save();// to save
-                    }
-                    
+                $newComment = new Comment();
+                $newComment->post_id = $post->id;
+                // 4. in caso di colonna nullable
+                if (rand(0,1)) {
+                    $newComment->name = $faker->name();
                 }
+                $newComment->content = $faker->text();
+                $newComment->save();
+            }
+            
+        }
     }
 }
