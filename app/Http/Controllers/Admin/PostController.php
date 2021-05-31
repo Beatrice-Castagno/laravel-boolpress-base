@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Tag;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -59,6 +60,10 @@ class PostController extends Controller
 
         $data['slug'] = Str::slug($data['title'], '-');
 
+        if ( isset($data['image']) ) {
+            $data['image'] = Storage::disk('public')->put('images', $data['image']);
+        }
+        
         $newPost = Post::create($data);    
         $newPost->tags()->attach($data['tags']);
 
@@ -109,6 +114,10 @@ class PostController extends Controller
        
         $data['slug'] = Str::slug($data['title'], '-');
         
+        if ( isset($data['image']) ) {
+            $data['image'] = Storage::disk('public')->put('images', $data['image']);
+        }
+
         $post->update($data);
 
         $post->tags()->sync($data['tags']);
