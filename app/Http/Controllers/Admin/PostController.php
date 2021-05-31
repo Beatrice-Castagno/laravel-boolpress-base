@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Tag;
 use App\Http\Controllers\Controller;
+use App\Mail\NewPostMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -66,7 +68,7 @@ class PostController extends Controller
         
         $newPost = Post::create($data);    
         $newPost->tags()->attach($data['tags']);
-
+        mail::to('to@example.com')->send(new NewPostMail($newPost));
         return redirect()->route('admin.posts.index');
     }
 
@@ -113,7 +115,7 @@ class PostController extends Controller
         $data['published'] = !isset($data['published']) ? 0 : 1;
        
         $data['slug'] = Str::slug($data['title'], '-');
-        
+
         if ( isset($data['image']) ) {
             $data['image'] = Storage::disk('public')->put('images', $data['image']);
         }
